@@ -1,7 +1,7 @@
 {
-    "name": "@jitesoft/gitlab-dep-convert",
+    "name": "@jitesoft/audit-for-gitlab",
     "version": "1.0.0",
-    "description": "Tiny converter to convert npm audit report into gitlab-ci dependency report format.",
+    "description": "Tiny converter to convert npm audit report into gitlab-ci vulnerability report format.",
     "main": "bin.js",
     "preferGlobal": true,
     "scripts": {
