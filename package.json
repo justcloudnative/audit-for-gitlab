@@ -3,8 +3,8 @@
     "version": "1.0.0",
     "description": "Tiny converter to convert npm audit report into gitlab-ci dependency report format.",
     "main": "bin.js",
+    "preferGlobal": true,
     "scripts": {
-        "test": "exit 0",
         "build:prod": "babel index.js -o bin.js"
     },
     "keywords": [
