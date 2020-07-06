@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { promises as fs } from 'fs';
 import { exec } from 'child_process';
 let exitCode = 0;
