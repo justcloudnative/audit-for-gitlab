@@ -5,3 +5,39 @@ It generates a JSON audit via npm and converts it to the format that gitlab expe
 
 In case a vulnerability equal or higher to `moderate` is found, it will exit with exit code 1, i.e., fail.  
 While generating the report, it will also output number of vulnerabilities found (and types) in stdout.
+
+## Usage
+
+Easiest way to use the scanner is to add it as a include in your .gitlab-ci.yml file, such as:
+
+```yaml
+include:
+  - https://gitlab.com/jitesoft/open-source/javascript/audit-for-gitlab/raw/master/scan.yml
+```
+
+This will run the scanning on your project on all events as long as it is disabled via env variables.
+
+If you wish to customize it a bit more, you can extend or write your own:
+
+```yaml
+npm-audit_dependency_scanning:
+  image: registry.gitlab.com/jitesoft/open-source/js/audit-for-gitlab:1
+  script:
+    - audit-for-gitlab
+  artifacts:
+    reports:
+      dependency_scanning: gl-dependency-scanning-report.json
+```
+
+If you wish to just use the scanner in one of your current scripts, the easiest way to do this, is to just install it via NPM:
+
+```sh
+npm i --global @jitesoft/audit-for-gitlab
+cd /my/project/dir
+audit-for-gitlab
+cat gl-dependency-scanning-report.json
+```
+
+## Dockerfile
+
+The dockerfile is rebuilt on each new version of the scanner released, each build is released for ARM64 and AMD64.  
