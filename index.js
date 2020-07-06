@@ -47,10 +47,19 @@ const putFile = async (json) => {
   }
   try {
     await fs.open('package-lock.json', 'r');
+
+    const deps = Object.entries(require('./package-lock.json').dependencies).map(o => {
+      return {
+        version: o[1].version,
+        package: {
+          name: o[0]
+        }
+      };
+    });
     files.push({
       path: 'package-lock.json',
       package_manager: 'npm',
-      dependencies: []
+      dependencies: deps
     });
   } catch (e) {
     // np!
@@ -88,7 +97,7 @@ const convertToGl = async (data) => {
   const obj = Object.keys(advisories).map((key) => {
     const val = advisories[key];
     const findings = val?.findings && val.findings.length > 0 ? val.findings : [null];
-    const packageName = arrayLast(arrayFirst(findings[0]?.paths)?.split('>')) ?? 'Unknown';
+    const packageName = val?.module_name ?? 'Unknown';
 
     packages[packageName] = true;
     vulnCount[val?.severity] += 1;
@@ -116,11 +125,14 @@ const convertToGl = async (data) => {
       category: 'Dependency Scanning',
       identifiers: [
         {
-          url: val?.url,
-          value: `cwe-${packageName}-${findings[0]?.version ?? 'Unknown'}-${val?.title ?? 'Unknown'}`,
+          url: `https://cwe.mitre.org/data/definitions/${arrayLast(val?.cwe?.split('-')) ?? 'error'}.html`,
+          value: `cwe-${val?.cwe ?? packageName}-${findings[0]?.version ?? 'Unknown'}-${val?.title ?? 'Unknown'}`.replace(' ', '-').toLowerCase(),
           type: 'cwe',
           name: val?.cwe
         }
+      ],
+      links: [
+        val?.url
       ],
       name: val?.title ?? 'Unknown',
       message: `${val?.title} in ${packageName}`,
