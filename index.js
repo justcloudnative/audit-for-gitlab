@@ -90,6 +90,8 @@ const convertToGl = async (data) => {
   await writeLine('stdout', `\tModerate: ${vulnCount.moderate}`);
   await writeLine('stdout', `\tLow:      ${vulnCount.low}`);
   await writeLine('stdout', `\tInfo:     ${vulnCount.info}\n`);
+
+  return obj;
 };
 
 const doExit = async () => {
