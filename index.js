@@ -16,8 +16,8 @@ const arrayLast = function (arr, def = null) {
 
 const getAudit = async () => {
   return new Promise((resolve, reject) => {
-    exec(`cd ${process.cwd()} && npm audit --json`, async (e, stdout, stderr) => {
-      return resolve(JSON.parse(stdout));
+    exec('npm audit --json', { maxBuffer: Number.MAX_SAFE_INTEGER }, async (e, stdout, stderr) => {
+        return resolve(JSON.parse(stdout));
     });
   });
 };
