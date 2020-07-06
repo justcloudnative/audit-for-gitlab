@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-require('bin.js');
+require('./bin.js');
