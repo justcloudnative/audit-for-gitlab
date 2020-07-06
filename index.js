@@ -29,9 +29,27 @@ const putFile = async (json) => {
   );
 };
 
-const convertToGl = (data) => {
+const writeLine = async (type, message) => {
+  return new Promise((resolve, reject) => {
+    process[type].write(message + '\n', () => {
+      resolve();
+    });
+  });
+};
+
+const convertToGl = async (data) => {
   const vulnerabilities = data.metadata.vulnerabilities;
   exitCode = (vulnerabilities.critical > 0 || vulnerabilities.high > 0 || vulnerabilities.moderate > 0) ? 1 : 0;
+
+  // Print out what type of vulnerabilities that affects the project.
+  const totalVulns = (vulnerabilities.info + vulnerabilities.low + vulnerabilities.moderate + vulnerabilities.high + vulnerabilities.critical);
+  await writeLine('stdout', `Found ${totalVulns} vulnerabilities in ${data.metadata.totalDependencies} dependencies.`);
+  await writeLine('stdout', `\tCritical: ${vulnerabilities.critical}`);
+  await writeLine('stdout', `\tHigh:     ${vulnerabilities.high}`);
+  await writeLine('stdout', `\tModerate: ${vulnerabilities.moderate}`);
+  await writeLine('stdout', `\tLow:      ${vulnerabilities.low}`);
+  await writeLine('stdout', `\tInfo:     ${vulnerabilities.info}`);
+
   const advisories = data.advisories;
   return Object.keys(advisories).map((key) => {
     const val = advisories[key];
@@ -58,16 +76,11 @@ const convertToGl = (data) => {
   });
 };
 
-const doExit = () => {
-  if (exitCode !== 0) {
-    process.exit(exitCode);
-  }
+const doExit = async () => {
+  await writeLine('stdout', `Exiting with exit code ${exitCode}`);
+  process.exit(exitCode);
 };
 
-getAudit().then(convertToGl).then(putFile).then(doExit).catch(e => {
-  process.stderr.write(e.message, (e) => {
-    if (e) {
-      console.error(e);
-    }
-  });
+getAudit().then(convertToGl).then(putFile).then(doExit).catch(async e => {
+  await writeLine('stderr', e.message);
 });
