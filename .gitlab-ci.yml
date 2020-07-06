@@ -22,4 +22,4 @@ docker-deploy:
     - if: '$CI_COMMIT_TAG'
       when: delayed
       start_in: '5 minutes'
-      allow_failure: false
+    - when: never
