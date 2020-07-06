@@ -4,7 +4,7 @@ stages:
   - docker
 
 npm-audit_dependency_scanning:
-  image: registry.gitlab.com/jitesoft/open-source/js/audit-for-gitlab:1
+  image: registry.gitlab.com/jitesoft/open-source/javascript/audit-for-gitlab:latest
   script:
     - audit-for-gitlab
   allow_failure: true

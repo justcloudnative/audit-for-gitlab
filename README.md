@@ -21,7 +21,7 @@ If you wish to customize it a bit more, you can extend or write your own:
 
 ```yaml
 npm-audit_dependency_scanning:
-  image: registry.gitlab.com/jitesoft/open-source/js/audit-for-gitlab:1
+  image: registry.gitlab.com/jitesoft/open-source/javascript/audit-for-gitlab:1
   script:
     - audit-for-gitlab
   artifacts:
