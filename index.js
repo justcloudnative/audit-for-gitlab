@@ -132,7 +132,10 @@ const convertToGl = async (data) => {
         }
       ],
       links: [
-        val?.url
+        {
+          name: "NPM advisories",
+          url: val?.url
+        }
       ],
       name: val?.title ?? 'Unknown',
       message: `${val?.title} in ${packageName}`,
@@ -151,6 +154,10 @@ const convertToGl = async (data) => {
           type: 'cve',
           name: val.cves[i]
         });
+        vuln.links.push({
+          name: 'CVE',
+          url: `https://cve.mitre.org/cgi-bin/cvename.cgi?name=${val.cves[i]}`
+        })
       }
     }
 
