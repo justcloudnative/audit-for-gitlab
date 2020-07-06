@@ -1,6 +1,6 @@
 stages:
   - test
-  - deplot
+  - deploy
   - docker
 
 include:
