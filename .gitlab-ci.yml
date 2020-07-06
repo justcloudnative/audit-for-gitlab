@@ -3,9 +3,29 @@ stages:
   - deploy
   - docker
 
-include:
-  - file: /Auto/npm.yml
-    project: jitesoft/gitlab-ci-lib
+npm-test:
+  stage: test
+  image: jitesoft/node-base:latest
+  variables:
+    NODE_ENV: develop
+  script:
+    - npm ci
+    - npm run test
+
+npm-deploy:
+  stage: deploy
+  image: jitesoft/node:latest
+  before_script:
+    - npm run build:prod
+    - rm Dockerfile
+    - rm scan.yml
+  script:
+    - npm version ${CI_COMMIT_TAG}
+    - npm publish --access public
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: always
+  tags: [ "protected", "npm" ]
 
 docker-deploy:
   stage: docker
@@ -22,4 +42,3 @@ docker-deploy:
     - if: '$CI_COMMIT_TAG'
       when: delayed
       start_in: '5 minutes'
-    - when: never
