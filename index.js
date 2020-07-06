@@ -18,7 +18,7 @@ const arrayLast = function (arr, def = null) {
 
 const getAudit = async () => {
   return new Promise((resolve, reject) => {
-    exec('npm audit --json', {maxBuffer: Math.round(freemem() * 0.85)}, async (e, stdout, stderr) => {
+    exec('npm audit --json', { maxBuffer: Math.round(freemem() * 0.85) }, async (e, stdout, stderr) => {
       return resolve(JSON.parse(stdout));
     });
   });
@@ -57,7 +57,7 @@ const convertToGl = async (data) => {
 
     packages[packageName] = true;
     vulnCount[val?.severity] += 1;
-    vulnCount['total'] += 1;
+    vulnCount.total += 1;
 
     return {
       location: {
@@ -84,7 +84,7 @@ const convertToGl = async (data) => {
   await writeLine('stdout', `Found ${totalVulns} paths with vulnerabilities. Project has ${data.metadata.totalDependencies} dependencies.`);
   await writeLine('stdout', `A total of ${vulnCount.total} vulnerabilities was found in ${Object.keys(packages).length} dependency.`);
   await writeLine('stdout', '\nResult:');
-  await writeLine('stdout', `\t\x1b[4mTotal:    ${vulnCount.total}\x1b[0m`)
+  await writeLine('stdout', `\t\x1b[4mTotal:    ${vulnCount.total}\x1b[0m`);
   await writeLine('stdout', `\tCritical: ${vulnCount.critical}`);
   await writeLine('stdout', `\tHigh:     ${vulnCount.high}`);
   await writeLine('stdout', `\tModerate: ${vulnCount.moderate}`);
