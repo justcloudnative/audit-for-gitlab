@@ -111,7 +111,7 @@ const convertToGl = async (data) => {
       },
       scanner: {
         id: 'jitesoft_npm_scanner',
-        name: 'NPM Audit',
+        name: 'NPM Audit scanner by Jitesoft',
         version: require('./package.json').version,
         vendor: {
           name: 'Jitesoft',
@@ -162,21 +162,36 @@ const convertToGl = async (data) => {
 
   // Print out what type of vulnerabilities that affects the project.
   const totalVulns = (vulnerabilities.info + vulnerabilities.low + vulnerabilities.moderate + vulnerabilities.high + vulnerabilities.critical);
-  await writeLine('stdout', `Found ${totalVulns} paths with vulnerabilities. Project has ${data.metadata.totalDependencies} dependencies.`);
-  await writeLine('stdout', `A total of ${vulnCount.total} vulnerabilities was found in ${Object.keys(packages).length} dependency.`);
-  await writeLine('stdout', '\nResult:');
-  await writeLine('stdout', `\t\x1b[4mTotal:    ${vulnCount.total}\x1b[0m`);
-  await writeLine('stdout', `\tCritical: ${vulnCount.critical}`);
-  await writeLine('stdout', `\tHigh:     ${vulnCount.high}`);
-  await writeLine('stdout', `\tModerate: ${vulnCount.moderate}`);
-  await writeLine('stdout', `\tLow:      ${vulnCount.low}`);
-  await writeLine('stdout', `\tInfo:     ${vulnCount.info}\n`);
-
+  if (getLogLevel() <= 1) {
+    await writeLine('stdout', `Found ${totalVulns} paths with vulnerabilities. Project has ${data.metadata.totalDependencies} dependencies.`);
+    await writeLine('stdout', `A total of ${vulnCount.total} vulnerabilities was found in ${Object.keys(packages).length} dependency.`);
+    await writeLine('stdout', '\nResult:');
+    await writeLine('stdout', `\t\x1b[4mTotal:    ${vulnCount.total}\x1b[0m`);
+    await writeLine('stdout', `\tCritical: ${vulnCount.critical}`);
+    await writeLine('stdout', `\tHigh:     ${vulnCount.high}`);
+    await writeLine('stdout', `\tModerate: ${vulnCount.moderate}`);
+    await writeLine('stdout', `\tLow:      ${vulnCount.low}`);
+    await writeLine('stdout', `\tInfo:     ${vulnCount.info}\n`);
+    await writeLine('stdout', `Scan completed. Thank you for using Jitesoft NPM Audit scanner (${require('./package.json').version}) for your scanning needs!`);
+  }
   return obj;
 };
 
+const getLogLevel = () => {
+  switch (process.env.SECURE_LOG_LEVEL) {
+    case 'fatal': return 4;
+    case 'error': return 3;
+    case 'warn': return 2;
+    case 'info': return 1;
+    case 'debug': return 0;
+    default: return 1;
+  }
+};
+
 const doExit = async () => {
-  await writeLine('stdout', `Exiting with exit code ${exitCode}`);
+  if (getLogLevel() <= 1) {
+    await writeLine('stdout', `Exiting with exit code ${exitCode}`);
+  }
   process.exit(exitCode);
 };
 

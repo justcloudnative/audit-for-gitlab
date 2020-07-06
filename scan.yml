@@ -8,7 +8,7 @@ npm-audit_dependency_scanning:
       when: never
     - if: $GITLAB_FEATURES =~ /\bdependency_scanning\b/
       exists:
-        - '**/package.json'
+        - 'package.json'
   artifacts:
     reports:
       dependency_scanning: gl-dependency-scanning-report.json
