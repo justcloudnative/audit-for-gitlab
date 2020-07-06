@@ -3,6 +3,15 @@ stages:
   - deploy
   - docker
 
+npm-audit_dependency_scanning:
+  image: registry.gitlab.com/jitesoft/open-source/js/audit-for-gitlab:1
+  script:
+    - audit-for-gitlab
+  allow_failure: true
+  artifacts:
+    reports:
+      dependency_scanning: gl-dependency-scanning-report.json
+
 npm-test:
   stage: test
   image: jitesoft/node-base:latest
@@ -38,7 +47,9 @@ docker-deploy:
     - MAJOR=$(echo $CI_COMMIT_TAG | cut -f1 -d'.')
     - MINOR=$(echo $CI_COMMIT_TAG | cut -f2 -d'.')
     - PATCH=$(echo $CI_COMMIT_TAG | cut -f3 -d'.')
-    - docker buildx build --platform linux/amd64,linux/arm64 --push -t ${CI_REGISTRY_IMAGE}:${MAJOR} -t ${CI_REGISTRY_IMAGE}:${MAJOR}${MINOR} -t ${CI_REGISTRY_IMAGE}:${MAJOR}${MINOR}${PATCH} -t ${CI_REGISTRY_IMAGE}:latest .
+    - GL_TAGS="-t ${CI_REGISTRY_IMAGE}:${MAJOR} -t ${CI_REGISTRY_IMAGE}:${MAJOR}.${MINOR} -t ${CI_REGISTRY_IMAGE}:${MAJOR}.${MINOR}.${PATCH} -t ${CI_REGISTRY_IMAGE}:latest"
+    - HUB_TAGS="-t jitesoft/audit-for-gitlab:${MAJOR} -t jitesoft/audit-for-gitlab:${MAJOR}.${MINOR} -t jitesoft/audit-for-gitlab:${MAJOR}.${MINOR}.${PATCH} -t jitesoft/audit-for-gitlab:latest"
+    - docker buildx build --platform linux/amd64,linux/arm64 --push ${GL_TAGS} ${HUB_TAGS} .
   rules:
     - if: '$CI_COMMIT_TAG'
       when: delayed
