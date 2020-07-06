@@ -2,8 +2,8 @@
     "name": "@jitesoft/audit-for-gitlab",
     "version": "1.0.0",
     "description": "Tiny converter to convert npm audit report into gitlab-ci vulnerability report format.",
-    "main": "bin.js",
-    "bin": "bin.js",
+    "main": "run.js",
+    "bin": "run.js",
     "preferGlobal": true,
     "scripts": {
         "test": "eslint index.js",
