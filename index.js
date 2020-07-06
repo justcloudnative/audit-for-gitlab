@@ -25,9 +25,44 @@ const getAudit = async () => {
 };
 
 const putFile = async (json) => {
+  let files = [];
+  try {
+    await fs.open('package.json', 'r');
+    const deps = [].concat(Object.entries(require('./package.json').dependencies), Object.entries(require('./package.json').devDependencies)).map(o => {
+      return {
+        version: o[1],
+        package: {
+          name: o[0]
+        }
+      }
+    });
+
+    files.push({
+      path: 'package.json',
+      package_manager: 'npm',
+      dependencies: deps
+    });
+  } catch (e) {
+    // np!
+  }
+  try {
+    await fs.open('package-lock.json', 'r');
+    files.push({
+      path: 'package-lock.json',
+      package_manager: 'npm',
+      dependencies: []
+    });
+  } catch (e) {
+    // np!
+  }
+
   await fs.writeFile(
     'gl-dependency-scanning-report.json',
-    JSON.stringify(json, null, 2)
+    JSON.stringify({
+      version: '2.0.0',
+      vulnerabilities: json,
+      dependency_files: files
+    }, null, 2)
   );
 };
 
@@ -59,24 +94,55 @@ const convertToGl = async (data) => {
     vulnCount[val?.severity] += 1;
     vulnCount.total += 1;
 
-    return {
+    const vuln = {
       location: {
+        file: 'package-lock.json',
         dependency: {
           package: {
-            name: packageName,
-            version: findings[0]?.version ?? 'Unknown'
-          }
+            name: packageName
+          },
+          version: findings[0]?.version ?? 'Unknown'
         }
       },
-      name: val.title,
+      scanner: {
+        id: "jitesoft_npm_scanner",
+        name: "NPM Audit",
+        version: require('./package.json').version,
+        vendor: {
+          name: 'Jitesoft',
+          email: 'support@jitesoft.com'
+        }
+      },
+      category: "Dependency Scanning",
+      identifiers: [
+        {
+          url: val?.url,
+          value: `cwe-${packageName}-${findings[0]?.version ?? 'Unknown'}-${val?.title ?? 'Unknown'}`,
+          type: 'cwe',
+          name: val?.cwe
+        }
+      ],
+      name: val?.title ?? 'Unknown',
       message: `${val?.title} in ${packageName}`,
       description: val?.overview,
-      cve: val?.cves.length > 0 ? val?.cves[0] : null,
-      cwe: val?.cwe,
+      cve: val?.cves.length > 0 ? val.cves[0] : val?.cwe ?? 'Unknown',
       solution: val?.recommendation,
       url: val?.url,
       priority: severities[val?.severity] ?? 'Unknown'
     };
+
+    if (val?.cves.length > 0) {
+      for (let i = 0; i < val.cves.length; i++) {
+        vuln.identifiers.push({
+          url: `https://cve.mitre.org/cgi-bin/cvename.cgi?name=${val.cves[i]}`,
+          value: `cve-${val.cves[i]}-${packageName}-${findings[0]?.version ?? 'Unknown'}-${val?.title ?? 'Unknown'}`,
+          type: 'cve',
+          name: val.cves[i]
+        });
+      }
+    }
+
+    return vuln;
   });
 
   // Print out what type of vulnerabilities that affects the project.
