@@ -1,8 +1,14 @@
+stages:
+  - test
+  - deplot
+  - docker
+
 include:
   - file: /Auto/npm.yml
     project: jitesoft/gitlab-ci-lib
 
 docker-deploy:
+  stage: docker
   image: registry.gitlab.com/jitesoft/dockerfiles/misc:latest
   tags:
     - protected
