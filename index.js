@@ -1,3 +1,4 @@
+import { freemem } from 'os';
 import { promises as fs } from 'fs';
 import { exec } from 'child_process';
 let exitCode = 0;
@@ -16,7 +17,7 @@ const arrayLast = function (arr, def = null) {
 
 const getAudit = async () => {
   return new Promise((resolve, reject) => {
-    exec('npm audit --json', { maxBuffer: Number.MAX_SAFE_INTEGER }, async (e, stdout, stderr) => {
+    exec('npm audit --json', { maxBuffer: Math.round(freemem() * 0.85) }, async (e, stdout, stderr) => {
         return resolve(JSON.parse(stdout));
     });
   });
