@@ -8,10 +8,6 @@ const severities = {
   info: 'Info', low: 'Low', moderate: 'Medium', high: 'High', critical: 'Critical'
 };
 
-const arrayFirst = function (arr, def = null) {
-  return arr !== null && arr.length > 0 ? arr[0] : def;
-};
-
 const arrayLast = function (arr, def = null) {
   return arr !== null && arr.length > 0 ? arr[arr.length - 1] : def;
 };
@@ -133,7 +129,7 @@ const convertToGl = async (data) => {
       ],
       links: [
         {
-          name: "NPM advisories",
+          name: 'NPM advisories',
           url: val?.url
         }
       ],
@@ -157,7 +153,7 @@ const convertToGl = async (data) => {
         vuln.links.push({
           name: 'CVE',
           url: `https://cve.mitre.org/cgi-bin/cvename.cgi?name=${val.cves[i]}`
-        })
+        });
       }
     }
 
