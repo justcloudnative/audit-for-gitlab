@@ -1,0 +1,14 @@
+npm-audit_dependency_scanning:
+  image: registry.gitlab.com/jitesoft/open-source/js/audit-for-gitlab:1
+  script:
+    - audit-for-gitlab
+  allow_failure: true
+  rules:
+    - if: $DEPENDENCY_SCANNING_DISABLED
+      when: never
+    - if: $GITLAB_FEATURES =~ /\bdependency_scanning\b/
+      exists:
+        - '**/package.json'
+  artifacts:
+    reports:
+      dependency_scanning: gl-dependency-scanning-report.json
