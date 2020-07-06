@@ -16,6 +16,7 @@ npm-deploy:
   stage: deploy
   image: jitesoft/node:latest
   before_script:
+    - npm ci
     - npm run build:prod
     - rm Dockerfile
     - rm scan.yml
