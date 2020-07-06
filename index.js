@@ -25,7 +25,7 @@ const getAudit = async () => {
 };
 
 const putFile = async (json) => {
-  let files = [];
+  const files = [];
   try {
     await fs.open('package.json', 'r');
     const deps = [].concat(Object.entries(require('./package.json').dependencies), Object.entries(require('./package.json').devDependencies)).map(o => {
@@ -34,7 +34,7 @@ const putFile = async (json) => {
         package: {
           name: o[0]
         }
-      }
+      };
     });
 
     files.push({
@@ -105,15 +105,15 @@ const convertToGl = async (data) => {
         }
       },
       scanner: {
-        id: "jitesoft_npm_scanner",
-        name: "NPM Audit",
+        id: 'jitesoft_npm_scanner',
+        name: 'NPM Audit',
         version: require('./package.json').version,
         vendor: {
           name: 'Jitesoft',
           email: 'support@jitesoft.com'
         }
       },
-      category: "Dependency Scanning",
+      category: 'Dependency Scanning',
       identifiers: [
         {
           url: val?.url,
