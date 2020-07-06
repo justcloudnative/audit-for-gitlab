@@ -128,7 +128,7 @@ const convertToGl = async (data) => {
       cve: val?.cves.length > 0 ? val.cves[0] : val?.cwe ?? 'Unknown',
       solution: val?.recommendation,
       url: val?.url,
-      priority: severities[val?.severity] ?? 'Unknown'
+      severity: severities[val?.severity] ?? 'Unknown'
     };
 
     if (val?.cves.length > 0) {
