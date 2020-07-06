@@ -1,41 +1,42 @@
-import { promises } from 'fs';
+import { promises as fs } from 'fs';
 import { exec } from 'child_process';
-const writeFile = promises.writeFile;
+let exitCode = 0;
 
 const severities = {
   info: 'Info', low: 'Low', moderate: 'Medium', high: 'High', critical: 'Critical'
 };
 
-//region Super simple ployfills.
-Array.prototype.first = function(def = null) {
-  return this.length > 0 ? this[0] : def;
+const arrayFirst = function (arr, def = null) {
+  return arr !== null && arr.length > 0 ? arr[0] : def;
 };
-Array.prototype.last = function (def = null) {
-  return this.length > 0 ? this[this.length -1] : def;
+
+const arrayLast = function (arr, def = null) {
+  return arr !== null && arr.length > 0 ? arr[arr.length - 1] : def;
 };
-//endregion
 
 const getAudit = async () => {
   return new Promise((resolve, reject) => {
-    exec(`cd ${process.cwd()} && npm audit --json`, async(e, stdout, stderr) => {
+    exec(`cd ${process.cwd()} && npm audit --json`, async (e, stdout, stderr) => {
       return resolve(JSON.parse(stdout));
     });
   });
 };
 
 const putFile = async (json) => {
-  await writeFile(
+  await fs.writeFile(
     'gl-dependency-scanning-report.json',
     JSON.stringify(json, null, 2)
   );
 };
 
 const convertToGl = (data) => {
+  const vulnerabilities = data.metadata.vulnerabilities;
+  exitCode = (vulnerabilities.critical > 0 || vulnerabilities.high > 0 || vulnerabilities.moderate > 0) ? 1 : 0;
   const advisories = data.advisories;
   return Object.keys(advisories).map((key) => {
     const val = advisories[key];
     const findings = val?.findings && val.findings.length > 0 ? val.findings : [null];
-    const packageName = findings[0]?.paths.first()?.split('>').last() ?? 'Unknown';
+    const packageName = arrayLast(arrayFirst(findings[0]?.paths)?.split('>')) ?? 'Unknown';
     return {
       location: {
         dependency: {
@@ -57,7 +58,13 @@ const convertToGl = (data) => {
   });
 };
 
-getAudit().then(convertToGl).then(putFile).catch(e => {
+const doExit = () => {
+  if (exitCode !== 0) {
+    process.exit(exitCode);
+  }
+};
+
+getAudit().then(convertToGl).then(putFile).then(doExit).catch(e => {
   process.stderr.write(e.message, (e) => {
     if (e) {
       console.error(e);

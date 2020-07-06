@@ -3,8 +3,10 @@
     "version": "1.0.0",
     "description": "Tiny converter to convert npm audit report into gitlab-ci vulnerability report format.",
     "main": "bin.js",
+    "bin": "bin.js",
     "preferGlobal": true,
     "scripts": {
+        "test": "eslint index.js",
         "build:prod": "babel index.js -o bin.js"
     },
     "keywords": [
@@ -21,10 +23,16 @@
         "report"
     ],
     "devDependencies": {
+        "eslint": "^7.4.0",
+        "babel-eslint": "^10.1.0",
+        "@jitesoft/eslint-config": "^2.2.0",
         "core-js": "^3.6.5",
         "@babel/cli": "^7.10.4",
         "@babel/core": "^7.10.4",
         "@jitesoft/babel-preset-main": "^2.3.2"
+    },
+    "eslintConfig": {
+        "extends": "@jitesoft"
     },
     "babel": {
         "presets": [
