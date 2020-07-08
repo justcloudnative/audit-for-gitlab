@@ -6,8 +6,8 @@
     "bin": "run.js",
     "preferGlobal": true,
     "scripts": {
-        "test": "eslint index.js",
-        "build:prod": "babel index.js -o bin.js"
+        "test": "eslint src/**/*.js",
+        "build:prod": "babel src/*.js -d bin/ && babel src/DataModels -d bin/DataModels"
     },
     "keywords": [
         "CI",
@@ -34,9 +34,6 @@
         "@babel/core": "^7.10.4",
         "@jitesoft/babel-preset-main": "^2.3.2"
     },
-    "eslintConfig": {
-        "extends": "@jitesoft"
-    },
     "babel": {
         "presets": [
             [
@@ -47,9 +44,18 @@
             ]
         ]
     },
+    "meta": {
+        "scanner": {
+            "id": "jitesoft_npm_scanner",
+            "name": "NPM Audit Scanner by Jitesoft.",
+            "vendor": {
+                "name": "Jitesoft <support@jitesoft.com>"
+            }
+        }
+    },
     "author": {
         "email": "johannes@jitesoft.com",
-        "ur": "https://jitesoft.com",
+        "url": "https://jitesoft.com",
         "name": "Johannes Tegnér"
     },
     "license": "MIT"
