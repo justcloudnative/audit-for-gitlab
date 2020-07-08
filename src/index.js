@@ -1,19 +1,14 @@
 import { logger, LogLevels, writeFile, getConf, fileExists } from './Util.js';
 import audit from './Audit.js';
-import convert from './Converter.js';
 import { reportFindings, doExit } from './Finalization.js';
-import { join } from 'path';
 import pkg from '../package.json';
 import lock from '../package-lock.json';
+import Result from './DataModels/Result.js';
 
 audit()
-  .then(async (d) => {
-    await logger(LogLevels.debug, 'Path:' + join(__dirname, '..', 'package.json'));
-    return d;
-  })
   .then(async d => {
     await logger(LogLevels.debug, 'Converting to gitlab scan data format...');
-    const result = await convert(d, pkg, lock);
+    const result = await Result.convert(d, pkg, lock);
     await logger(LogLevels.debug, 'Conversion done.');
     return result;
   })
