@@ -34,7 +34,7 @@ const doExit = async (result) => {
   );
   await logger(LogLevels.debug, `Exiting with code ${exitCode}`);
   if (exitCode !== 0) {
-    await logger(LogLevels.error, `Found vulneabilities with high severity in the scan, exiting with code ${exitCode}`);
+    await logger(LogLevels.error, `Found vulnerabilities with high severity in the scan, exiting with code ${exitCode}`);
   }
 
   process.exit(exitCode);
