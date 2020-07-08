@@ -87,7 +87,7 @@ const logger = async (level, message) => {
   const logLevel = getConf('SECURE_LOG_LEVEL', 'info').toLowerCase();
   const keys = ['fatal', 'error', 'warn', 'info', 'debug'];
 
-  if (keys.indexOf(logLevel) !== -1 && keys.indexOf(level) >= keys.indexOf(logLevel)) {
+  if (keys.indexOf(logLevel) !== -1 && keys.indexOf(level) <= keys.indexOf(logLevel)) {
     logLevels[logLevel](message);
   }
 };
