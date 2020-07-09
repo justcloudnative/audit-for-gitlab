@@ -3,23 +3,20 @@ stages:
   - deploy
   - docker
 
-npm-audit_dependency_scanning:
-  image: registry.gitlab.com/jitesoft/open-source/javascript/audit-for-gitlab:latest
-  script:
-    - audit-for-gitlab
-  allow_failure: true
-  artifacts:
-    reports:
-      dependency_scanning: gl-dependency-scanning-report.json
-
 npm-test:
   stage: test
   image: jitesoft/node-base:latest
   variables:
     NODE_ENV: develop
+    SECURE_LOG_LEVEL: debug
   script:
     - npm ci
     - npm run test
+    - npm run build:prod
+    - node run.js
+  artifacts:
+    reports:
+      dependency_scanning: gl-dependency-scanning-report.json
 
 npm-deploy:
   stage: deploy

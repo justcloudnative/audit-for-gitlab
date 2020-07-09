@@ -41,3 +41,14 @@ cat gl-dependency-scanning-report.json
 ## Dockerfile
 
 The dockerfile is rebuilt on each new version of the scanner released, each build is released for ARM64 and AMD64.  
+
+## Env variables
+
+The following env variables can be used to configure the behaviour of the application slightly:
+
+`SECURE_LOG_LEVEL` - Will change the log level to report more or less output.  
+Available levels are: `fatal`, `error`, `warn`, `info`, `debug`though only debug, info and fatal are used in the application.  
+The debug level is basically only used for debugging purposes and development. `info` is default.
+
+`SCAN_EXIT_CODE` - Will force a specific exit code in case of a moderate, high or critical vulnerability is found.  
+In case this is not set, exit code `1` will be used in the cases above, else `0`.
