@@ -1,0 +1,8 @@
+webpack.config.js
+.babelrc
+.gitignore
+.gitlab-ci.yml
+.eslintrc.*
+tests
+.github
+CHANGES.md

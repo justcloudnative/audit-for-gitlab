@@ -1,13 +1,21 @@
 {
     "name": "@jitesoft/audit-for-gitlab",
     "version": "1.0.0",
-    "description": "Tiny converter to convert npm audit report into gitlab-ci vulnerability report format.",
+    "readmeFilename": "README.md",
+    "description": "Minimal application to convert npm audit report into gitlab-ci vulnerability report format.",
     "main": "run.js",
     "bin": "run.js",
     "preferGlobal": true,
     "scripts": {
         "test": "eslint src/**/*.js",
         "build:prod": "babel src/*.js -d bin/ && babel src/DataModels -d bin/DataModels"
+    },
+    "files": [
+        "/bin"
+    ],
+    "funding": {
+        "type": "opencollective",
+        "url": "https://opencollective.com/jitesoft-open-source"
     },
     "keywords": [
         "CI",
@@ -28,20 +36,18 @@
     "devDependencies": {
         "eslint": "^7.4.0",
         "babel-eslint": "^10.1.0",
-        "@jitesoft/eslint-config": "^2.2.0",
+        "@jitesoft/eslint-config": "^2.3.0",
         "core-js": "^3.6.5",
         "@babel/cli": "^7.10.4",
         "@babel/core": "^7.10.4",
-        "@jitesoft/babel-preset-main": "^2.3.2"
+        "@jitesoft/babel-preset-main": "^2.4.0",
+        "jest": "^26.1.0",
+        "babel-jest": "^26.1.0"
     },
-    "babel": {
-        "presets": [
-            [
-                "@jitesoft/main",
-                {
-                    "mode": "node"
-                }
-            ]
+    "jest": {
+        "collectCoverage": true,
+        "coverageReporters": [
+            "text"
         ]
     },
     "meta": {
@@ -53,6 +59,21 @@
             }
         }
     },
+    "repository": {
+        "type": "git",
+        "url": "https://gitlab.com/jitesoft/open-source/javascript/audit-for-gitlab"
+    },
+    "bugs": {
+        "email": "support@jitesoft.com",
+        "url": "https://gitlab.com/jitesoft/open-source/javascript/audit-for-gitlab/issues"
+    },
+    "maintainers": [
+        {
+            "email": "johannes@jitesoft.com",
+            "name": "Johannes Tegnér",
+            "url": "https://jite.eu"
+        }
+    ],
     "author": {
         "email": "johannes@jitesoft.com",
         "url": "https://jitesoft.com",
