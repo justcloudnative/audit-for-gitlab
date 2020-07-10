@@ -38,17 +38,18 @@ export default class Result {
    * Convert data from NPM Audit command into gitlab-ci scan report format.
    *
    * @param {Audit} data
-   * @param packageData
-   * @param packageLockData
+   * @param {object} me              Package json for the scanner.
+   * @param {object} packageData     Target package.json.
+   * @param {object} packageLockData Target lockfile.
    * @return {Promise<Result>}
    */
-  static async convert (data, packageData, packageLockData) {
+  static async convert (data, me, packageData, packageLockData) {
     const result = new Result();
     await logger(LogLevels.debug, 'Generating base values...');
 
-    const scanner = packageData.meta.scanner;
+    const scanner = me.meta.scanner;
     await logger(LogLevels.debug, 'Scanner created.');
-    scanner.version = packageData.version;
+    scanner.version = me.version;
 
     await logger(LogLevels.debug, `Scanner version set: ${scanner.version}`);
 
