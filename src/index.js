@@ -2,13 +2,14 @@ import { logger, LogLevels, writeFile, getConf, fileExists } from './Util.js';
 import audit from './Audit.js';
 import { reportFindings, doExit } from './Finalization.js';
 import Result from './DataModels/Result.js';
+const me = require('../package.json');
 const pkg = require(process.cwd() + '/package.json');
 const lock = require(process.cwd() + '/package-lock.json');
 
 audit()
   .then(async d => {
     await logger(LogLevels.debug, 'Converting to gitlab scan data format...');
-    const result = await Result.convert(d, pkg, lock);
+    const result = await Result.convert(d, me, pkg, lock);
     await logger(LogLevels.debug, 'Conversion done.');
     return result;
   })
@@ -20,6 +21,6 @@ audit()
     }
     return d;
   })
-  .then(d => reportFindings(d, pkg.version))
+  .then(d => reportFindings(d, me.version))
   .then(doExit)
   .catch(e => logger(LogLevels.fatal, e.message));
