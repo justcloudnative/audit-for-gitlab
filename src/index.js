@@ -1,9 +1,9 @@
 import { logger, LogLevels, writeFile, getConf, fileExists } from './Util.js';
 import audit from './Audit.js';
 import { reportFindings, doExit } from './Finalization.js';
-import pkg from '../package.json';
-import lock from '../package-lock.json';
 import Result from './DataModels/Result.js';
+const pkg = require(process.cwd() + 'package.json');
+const lock = require(process.cwd() + 'package-lock.json');
 
 audit()
   .then(async d => {
