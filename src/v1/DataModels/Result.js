@@ -60,7 +60,7 @@ export default class Result {
 
     await logger(LogLevels.debug, 'Filtering vulnerabilities by severity.');
     for (const severity of Object.keys(result.#vulnerabilities)) {
-      const sev = this.#severities[severity];
+      const sev = Result.#severities[severity];
       result.#vulnerabilities[severity] = all.filter(s => s.severity === sev);
     }
 
