@@ -56,7 +56,7 @@ export default class GitLabAnalyzer {
     }
 
     return {
-      version: this.#version,
+      version: '15.0.2',
       scan: {
         analyzer: {
           version: this.#version,

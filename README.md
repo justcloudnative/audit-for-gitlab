@@ -9,7 +9,7 @@ While generating the report, it will also output number of vulnerabilities found
 
 **Observe:**  
 The scanner will _currently_ only work with npmjs versions which makes use of audit report v2.  
-GitLab report specification supported is [418ca9bd81c7a99f51706b50b033c69b13f5d744](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/5778ed0c8f9996f3a809439fc61a0b5272b26a0a/dist/dependency-scanning-report-format.json)
+GitLab report specification supported is [15.0.2](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/5778ed0c8f9996f3a809439fc61a0b5272b26a0a/dist/dependency-scanning-report-format.json)
 
 ## Usage
 
