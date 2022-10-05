@@ -1,26 +1,47 @@
-import { logger, LogLevels, writeFile, getConf, fileExists } from './Util.js';
-import audit from './Audit.js';
-import { reportFindings, doExit } from './Finalization.js';
-import Result from './DataModels/Result.js';
-const me = require('../package.json');
-const pkg = require(process.cwd() + '/package.json');
-const lock = require(process.cwd() + '/package-lock.json');
+import { fileExists, getConf, logger, LogLevels, writeFile } from './Util';
+import { audit, version } from './Npm';
+import { doExit, reportFindings } from './Finalize';
+import GitLabAnalyzer from './GitLabAnalyzer';
 
-audit()
-  .then(async d => {
-    await logger(LogLevels.debug, 'Converting to gitlab scan data format...');
-    const result = await Result.convert(d, me, pkg, lock);
-    await logger(LogLevels.debug, 'Conversion done.');
-    return result;
-  })
-  .then(async d => {
-    await logger(LogLevels.debug, 'Writing result to file.');
-    await writeFile(getConf('REPORT_FILE', 'gl-dependency-scanning-report.json'), JSON.stringify(d.report, null, 2));
-    if (await fileExists('gl-dependency-scanning-report.json')) {
-      await logger(LogLevels.debug, 'File created successfully.');
-    }
-    return d;
-  })
-  .then(d => reportFindings(d, me.version))
-  .then(doExit)
-  .catch(e => logger(LogLevels.fatal, e.message));
+const startTime = new Date();
+const packageInfo = require('../package.json');
+
+audit().then(async auditData => {
+  await logger(LogLevels.info, 'Generated audit report from npm');
+  await logger(LogLevels.info, 'Converting to gitlab specification');
+
+  const npmVersion = await version();
+
+  const result = await (new GitLabAnalyzer(
+    packageInfo.meta.scanner,
+    startTime,
+    packageInfo.version,
+    npmVersion.npm
+  )).convert(
+    auditData.vulnerabilities,
+    require(process.cwd() + '/package.json'),
+    require(process.cwd() + '/package-lock.json')
+  );
+
+  return {
+    npmVersion: npmVersion.npm,
+    meta: auditData.metadata,
+    result
+  };
+}).then(async output => {
+  await logger(LogLevels.debug, 'Writing result to file.');
+  await writeFile(getConf('REPORT_FILE', 'gl-dependency-scanning-report.json'), JSON.stringify(output.result, null, 2));
+  if (await fileExists('gl-dependency-scanning-report.json')) {
+    await logger(LogLevels.debug, 'File created successfully.');
+  }
+
+  return {
+    npmVersion: output.npmVersion,
+    meta: output.meta
+  };
+}).then(async data => {
+  await reportFindings(data.meta, data.npmVersion, packageInfo);
+  await doExit(data.meta.vulnerabilities);
+}).catch(e => {
+  logger(LogLevels.fatal, e.message);
+});

@@ -1,4 +1,0 @@
-{
-    "extends": "@jitesoft",
-    "parser": "babel-eslint"
-}

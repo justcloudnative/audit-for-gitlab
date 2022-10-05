@@ -6,6 +6,11 @@ It generates a JSON audit via npm and converts it to the format that gitlab expe
 In case a vulnerability equal or higher to `moderate` is found, it will exit with exit code 1, i.e., fail.  
 While generating the report, it will also output number of vulnerabilities found (and types) in stdout.
 
+
+**Observe:**  
+The scanner will _currently_ only work with npmjs versions which makes use of audit report v2.  
+GitLab report specification supported is [15.0.2](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/5778ed0c8f9996f3a809439fc61a0b5272b26a0a/dist/dependency-scanning-report-format.json)
+
 ## Usage
 
 Easiest way to use the scanner is to add it as a include in your .gitlab-ci.yml file, such as:
