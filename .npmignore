@@ -6,3 +6,5 @@ tests
 .github
 CHANGES.md
 entry.d.ts
+Dockerfile
+scan.yml
