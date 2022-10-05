@@ -52,7 +52,10 @@ export default class GitLabAnalyzer {
         continue; // TODO, fix this
       }
 
-      vulns.push(this.#createVulnerability(obj, via));
+      const result = this.#createVulnerability(obj, via);
+      if (result !== null) {
+        vulns.push(result);
+      }
     }
 
     return {
@@ -102,6 +105,10 @@ export default class GitLabAnalyzer {
       value: `${cwe}-${packageName}`,
       url: `https://cwe.mitre.org/data/definitions/${cwe.replace('CWE-', '')}.html`
     }));
+
+    if (identifiers.length === 0) {
+      return null;
+    }
 
     let solution = [];
     if (vuln.fixAvailable) {
