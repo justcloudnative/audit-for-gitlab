@@ -8,7 +8,7 @@
     "preferGlobal": true,
     "scripts": {
         "test": "eslint src/**/*.js",
-        "build:prod": "babel src/ -d bin/"
+        "build:prod": "babel src/ -d bin/ && cp src/cwe.json bin/cwe.json"
     },
     "files": [
         "/bin"
@@ -40,7 +40,9 @@
         "core-js": "^3.25.5",
         "@babel/cli": "^7.19.3",
         "@babel/core": "^7.19.3",
-        "@jitesoft/babel-preset-main": "^4.0.2"
+        "@jitesoft/babel-preset-main": "^4.0.2",
+        "csv-parser": "^3.0.0",
+        "unfetch": "^4.2.0"
     },
     "eslintConfig": {
         "parser": "@babel/eslint-parser",

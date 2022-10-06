@@ -1,4 +1,5 @@
 import { randomUUID } from 'crypto';
+import CWEList from './cwe.json';
 
 export default class GitLabAnalyzer {
   #scanner;
@@ -119,9 +120,25 @@ export default class GitLabAnalyzer {
       }
     }
 
+    const cweNumber = parseInt(identifiers[0].name.replace('CWE-', ''));
+    let cweData = {
+      name: `${identifiers[0].name} (in ${packageName})`,
+      description: ''
+    };
+
+    if (cweNumber in CWEList) {
+      cweData = {
+        name: CWEList[cweNumber].name,
+        description: CWEList[cweNumber].description
+      };
+
+      cweData.name = `${cweData.name} (in ${packageName})`;
+    }
+
     return {
       id: randomUUID(),
-      name: packageName,
+      name: cweData.name,
+      description: cweData.description,
       severity: GitLabAnalyzer.#severities[vuln.severity],
       links: [
         { url: via.url }
@@ -138,7 +155,7 @@ export default class GitLabAnalyzer {
         }
       },
       identifiers,
-      remidations: solution
+      remediations: solution
     };
   }
 }
