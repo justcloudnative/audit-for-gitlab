@@ -8,3 +8,4 @@ CHANGES.md
 entry.d.ts
 Dockerfile
 scan.yml
+build-cwe.js
