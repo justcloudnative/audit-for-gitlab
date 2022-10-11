@@ -1,15 +1,28 @@
 import { promises as fs } from 'fs';
 
+const hasOwn = (object, key) => {
+  if (Object.hasOwn) {
+    return Object.hasOwn(object, key);
+  }
+
+  // eslint-disable-next-line no-prototype-builtins
+  return object.hasOwnProperty(key);
+};
+
 /**
  * Fetch a value from the configuration.
  * In this case, the configuration is fully done by environment variables.
  *
  * @param {string} key Key to look for.
  * @param {any}    def Default value to return in case no key was found.
- * @return {any}
+ * @return {string|null}
  */
 const getConf = (key, def = null) => {
-  return process.env[key] ?? def;
+  if (hasOwn(process.env, key)) {
+    return process.env[key] ?? def;
+  }
+
+  return def;
 };
 
 /**
@@ -39,6 +52,11 @@ const fileExists = async (file) => {
  */
 const writeFile = async (file, data) => {
   return fs.writeFile(file, data);
+};
+
+const readFileJson = async (file) => {
+  const data = await fs.readFile(file);
+  return JSON.parse(data);
 };
 
 const stdout = async (message) => {
@@ -87,7 +105,7 @@ const logger = async (level, message) => {
   const logLevel = getConf('SECURE_LOG_LEVEL', 'info').toLowerCase();
   const keys = ['fatal', 'error', 'warn', 'info', 'debug'];
 
-  if (keys.indexOf(logLevel) !== -1 && keys.indexOf(level) <= keys.indexOf(logLevel)) {
+  if (keys.includes(logLevel)) {
     logLevels[logLevel](message);
   }
 };
@@ -97,5 +115,7 @@ export {
   LogLevels,
   logger,
   writeFile,
-  fileExists
+  fileExists,
+  readFileJson,
+  hasOwn
 };
