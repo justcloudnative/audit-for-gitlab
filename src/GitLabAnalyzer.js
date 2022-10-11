@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto';
 import CWEList from './cwe.json';
+import { hasOwn } from './Util';
 
 export default class GitLabAnalyzer {
   #scanner;
@@ -33,29 +34,33 @@ export default class GitLabAnalyzer {
   async convert (vulnerabilities, packageData, packagelockData) {
     const dependencies = [];
     for (const name in packagelockData.dependencies) {
-      dependencies.push(
-        {
-          package: {
-            name
-          },
-          version: packagelockData.dependencies[name].version
-        }
-      );
+      if (hasOwn(packagelockData.dependencies, name) && 'version' in packagelockData.dependencies[name]) {
+        dependencies.push(
+          {
+            package: {
+              name
+            },
+            version: packagelockData.dependencies[name].version
+          }
+        );
+      }
     }
 
     const vulns = [];
 
     for (const vuln in vulnerabilities) {
-      const obj = vulnerabilities[vuln];
-      const via = obj.via.shift();
+      if (hasOwn(vulnerabilities, vuln)) {
+        const obj = vulnerabilities[vuln];
+        const via = obj.via.shift();
 
-      if (typeof via !== 'object') {
-        continue; // TODO, fix this
-      }
+        if (typeof via !== 'object') {
+          continue; // TODO, fix this
+        }
 
-      const result = this.#createVulnerability(obj, via);
-      if (result !== null) {
-        vulns.push(result);
+        const result = this.#createVulnerability(obj, via);
+        if (result !== null) {
+          vulns.push(result);
+        }
       }
     }
 
@@ -96,6 +101,7 @@ export default class GitLabAnalyzer {
    *
    * @param {IEntry} vuln
    * @param {IVia} via
+   * @return {Object|null}
    */
   #createVulnerability (vuln, via) {
     const packageName = vuln.name;
@@ -127,19 +133,23 @@ export default class GitLabAnalyzer {
     };
 
     if (cweNumber in CWEList) {
-      cweData = {
-        name: CWEList[cweNumber].name,
-        description: CWEList[cweNumber].description
-      };
+      if (hasOwn(CWEList, cweNumber)) {
+        cweData = {
+          name: CWEList[cweNumber].name,
+          description: CWEList[cweNumber].description
+        };
 
-      cweData.name = `${cweData.name} (in ${packageName})`;
+        cweData.name = `${cweData.name} (in ${packageName})`;
+      }
     }
 
     return {
       id: randomUUID(),
       name: cweData.name,
       description: cweData.description,
-      severity: GitLabAnalyzer.#severities[vuln.severity],
+      severity: hasOwn(GitLabAnalyzer.#severities, vuln.severity)
+        ? GitLabAnalyzer.#severities[vuln.severity]
+        : 'Unknown',
       links: [
         { url: via.url }
       ],

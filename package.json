@@ -44,10 +44,6 @@
         "csv-parser": "^3.0.0",
         "unfetch": "^4.2.0"
     },
-    "eslintConfig": {
-        "parser": "@babel/eslint-parser",
-        "extends": "@jitesoft"
-    },
     "meta": {
         "scanner": {
             "id": "jitesoft_npm_scanner",

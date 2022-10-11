@@ -1,16 +1,19 @@
-import { fileExists, getConf, logger, LogLevels, writeFile } from './Util';
+import { fileExists, getConf, logger, LogLevels, writeFile, readFileJson } from './Util';
 import { audit, version } from './Npm';
 import { doExit, reportFindings } from './Finalize';
+import packageInfo from '../package.json';
 import GitLabAnalyzer from './GitLabAnalyzer';
 
 const startTime = new Date();
-const packageInfo = require('../package.json');
 
 audit().then(async auditData => {
   await logger(LogLevels.info, 'Generated audit report from npm');
   await logger(LogLevels.info, 'Converting to gitlab specification');
 
   const npmVersion = await version();
+
+  const packageFile = await readFileJson(`${process.cwd()}/package.json`);
+  const packageLockFile = await readFileJson(`${process.cwd()}/package-lock.json`);
 
   const result = await (new GitLabAnalyzer(
     packageInfo.meta.scanner,
@@ -19,8 +22,8 @@ audit().then(async auditData => {
     npmVersion.npm
   )).convert(
     auditData.vulnerabilities,
-    require(process.cwd() + '/package.json'),
-    require(process.cwd() + '/package-lock.json')
+    packageFile,
+    packageLockFile
   );
 
   return {
