@@ -28,24 +28,10 @@ export default class GitLabAnalyzer {
    *
    * @param vulnerabilities {object}
    * @param packageData {object}
-   * @param packagelockData {object}
+   * @param packageLockDependencies {object}
    * @returns {Promise<object>}
    */
-  async convert (vulnerabilities, packageData, packagelockData) {
-    const dependencies = [];
-    for (const name in packagelockData.dependencies) {
-      if (hasOwn(packagelockData.dependencies, name) && 'version' in packagelockData.dependencies[name]) {
-        dependencies.push(
-          {
-            package: {
-              name
-            },
-            version: packagelockData.dependencies[name].version
-          }
-        );
-      }
-    }
-
+  async convert (vulnerabilities, packageData, packageLockDependencies) {
     const vulns = [];
 
     for (const vuln in vulnerabilities) {
@@ -89,7 +75,7 @@ export default class GitLabAnalyzer {
         {
           path: 'package-lock.json',
           package_manager: 'npm',
-          dependencies
+          packageLockDependencies,
         }
       ],
       vulnerabilities: vulns

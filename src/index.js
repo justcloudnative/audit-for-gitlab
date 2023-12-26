@@ -3,6 +3,7 @@ import { audit, version } from './Npm';
 import { doExit, reportFindings } from './Finalize';
 import packageInfo from '../package.json';
 import GitLabAnalyzer from './GitLabAnalyzer';
+import dependencyProcessor from './dependencies/Processor';
 
 const startTime = new Date();
 
@@ -15,6 +16,9 @@ audit().then(async auditData => {
   const packageFile = await readFileJson(`${process.cwd()}/package.json`);
   const packageLockFile = await readFileJson(`${process.cwd()}/package-lock.json`);
 
+  // Fetch all dependencies.
+  const dependencies = await dependencyProcessor(packageLockFile);
+
   const result = await (new GitLabAnalyzer(
     packageInfo.meta.scanner,
     startTime,
@@ -23,7 +27,7 @@ audit().then(async auditData => {
   )).convert(
     auditData.vulnerabilities,
     packageFile,
-    packageLockFile
+    dependencies
   );
 
   return {
