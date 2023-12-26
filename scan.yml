@@ -1,5 +1,5 @@
 npm-audit_dependency_scanning:
-  image: registry.gitlab.com/jitesoft/open-source/javascript/audit-for-gitlab:3
+  image: registry.gitlab.com/jitesoft/open-source/javascript/audit-for-gitlab:4
   script:
     - audit-for-gitlab
   allow_failure: true
