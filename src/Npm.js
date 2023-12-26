@@ -8,7 +8,7 @@ import { logger, LogLevels } from './Util.js';
  * @return {Promise<object>}
  */
 const version = async () => {
-  await logger(LogLevels.debug, 'Running audit.');
+  await logger(LogLevels.debug, 'Fetching npm version.');
   return new Promise((resolve, reject) => {
     exec(
       'npm version --json',
@@ -19,7 +19,7 @@ const version = async () => {
         if (stderr) {
           await logger(LogLevels.error, stderr);
         }
-        await logger(LogLevels.debug, 'Audit done.');
+        await logger(LogLevels.debug, 'Version fetch done.');
         return resolve(JSON.parse(stdout));
       }
     );
