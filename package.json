@@ -31,18 +31,18 @@
         "report"
     ],
     "dependencies": {
-        "@babel/runtime-corejs3": "^7.19.1"
+        "@babel/runtime-corejs3": "^7.23.6"
     },
     "devDependencies": {
-        "eslint": "^8.24.0",
-        "@babel/eslint-parser": "^7.19.1",
-        "@jitesoft/eslint-config": "^4.1.7",
-        "core-js": "^3.25.5",
-        "@babel/cli": "^7.19.3",
-        "@babel/core": "^7.19.3",
-        "@jitesoft/babel-preset-main": "^4.0.2",
+        "eslint": "^8.56.0",
+        "@babel/eslint-parser": "^7.23.3",
+        "@jitesoft/eslint-config": "^4.2.6",
+        "core-js": "^3.34.0",
+        "@babel/cli": "^7.23.4",
+        "@babel/core": "^7.23.6",
+        "@jitesoft/babel-preset-main": "^5.3.2",
         "csv-parser": "^3.0.0",
-        "unfetch": "^4.2.0"
+        "unfetch": "^5.0.0"
     },
     "meta": {
         "scanner": {
