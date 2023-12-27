@@ -75,7 +75,7 @@ export default class GitLabAnalyzer {
         {
           path: 'package-lock.json',
           package_manager: 'npm',
-          packageLockDependencies,
+          dependencies: packageLockDependencies
         }
       ],
       vulnerabilities: vulns
